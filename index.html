@@ -1,11 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Myosotis Java</title>
 </head>
+
 <body>
-    
+    <h1>Repository File Browser</h1>
+    <ul id="file-list"></ul>
+
+    <script>
+        async function fetchFileList() {
+            const response = await fetch('https://api.github.com/repos/你的用户名/你的仓库名/contents/');
+            const data = await response.json();
+            return data;
+        }
+
+        function displayFileList(files) {
+            const fileList = document.getElementById('file-list');
+            files.forEach(file => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.textContent = file.name;
+                link.href = file.type === 'dir' ? file.html_url : `https://github.com/你的用户名/你的仓库名/blob/master/${file.path}`;
+                link.target = '_blank';
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+            });
+        }
+
+        fetchFileList()
+            .then(displayFileList)
+            .catch(error => console.error('Error fetching file list:', error));
+    </script>
 </body>
+
 </html>
